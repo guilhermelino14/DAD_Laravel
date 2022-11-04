@@ -23,3 +23,5 @@ Route::resource('order', 'App\Http\Controllers\OrderController');
 Route::resource('user', 'App\Http\Controllers\UserController');
 Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
+
+Route::get('product/photo/{photo}', 'App\Http\Controllers\ProductController@photo');

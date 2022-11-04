@@ -82,4 +82,10 @@ class ProductController extends Controller
     {
         //
     }
+
+    
+    public function photo($photo)
+    {
+        return response()->file(storage_path('app/public/products/'.$photo));
+    }
 }
