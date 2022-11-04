@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::resource('product', 'App\Http\Controllers\ProductController');
 Route::resource('order', 'App\Http\Controllers\OrderController');
@@ -25,3 +25,7 @@ Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
 
 Route::get('product/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
+
+Route::post('login', 'App\Http\Controllers\AuthController@login');
+Route::post('register', 'App\Http\Controllers\AuthController@register');
+Route::post('logout', 'App\Http\Controllers\AuthController@logout');
