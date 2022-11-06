@@ -14,11 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// Route::middleware('auth:sanctum')->get('/userteste', function (Request $request) {
 //     return $request->user();
 // });
 
-Route::resource('product', 'App\Http\Controllers\ProductController');
+
+Route::resource('product', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
+
+Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:sanctum', 'ManagerVerification']);
+
 Route::resource('order', 'App\Http\Controllers\OrderController');
 Route::resource('user', 'App\Http\Controllers\UserController');
 Route::resource('customer', 'App\Http\Controllers\CustomerController');
@@ -28,4 +32,5 @@ Route::get('product/photo/{photo}', 'App\Http\Controllers\ProductController@phot
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
-Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+Route::post('logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:sanctum');
+

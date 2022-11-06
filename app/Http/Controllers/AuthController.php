@@ -14,15 +14,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = User::where('email', $request->email)->first();
-            $token = $user->createToken('token')->accessToken;
-            return response()->json(['token' => $token['token']], 200);
+            $token = $user->createToken('token')->plainTextToken;
+            return response()->json(['token' => $token], 200);
         } else {
             return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
     public function register(Request $request)
     {
-        // registe the user and if was sucessfull return the token
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -33,13 +32,13 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $token = $user->createToken('token')->accessToken;
-        return response()->json(['token' => $token['token']], 200);
+        $token = $user->createToken('token')->plainTextToken;
+        return response()->json(['token' => $token], 200);
     }
 
-    // logout the user and revoke the token from request
     public function logout(Request $request)
     {
-        return Auth::id();
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out'], 200);
     }
 }
