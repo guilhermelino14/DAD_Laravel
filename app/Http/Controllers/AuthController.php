@@ -15,9 +15,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = User::where('email', $request->email)->first();
             $token = $user->createToken('token')->plainTextToken;
-            return response()->json(['token' => $token], 200);
+            return response()->json(['user' => $user,'token' => $token], 200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
     }
     public function register(Request $request)
@@ -38,7 +38,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
+        // dd($request->user()->currentAccessToken());
+        // $request->user()->tokens()->where('id', auth()->id())->delete();
+        // $request->user()->currentAccessToken()->delete();
+        // return response(['message'=>'teste']);
+        
         return response()->json(['message' => 'Logged out'], 200);
     }
 }
