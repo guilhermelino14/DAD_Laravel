@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/userteste', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:api')->get('/userteste', function (Request $request) {
+    return $request->user();
+});
 
 
 Route::resource('product', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
