@@ -22,13 +22,51 @@ class AuthController extends Controller
             return response()->json(['user' => $user], 200);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out'], 200);
+    }
+
+    public function register(Request $request)
+    {
+        // if the user is register by himself or not speficied
+        if ($request->type == ""){
+            $request->type = 'C';
+        }
+
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|confirmed',
+            'nif' => 'required|digits:9',
+            'phone' => 'required|digits:9',
+        ]);
+        
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'type' => $request->type,
+        ]);
+
+        $user->save();
+
+        
+        if ($request->type == 'C') {
+            $customer = new Customer([
+                'user_id' => $user->id,
+                'nif' => $request->nif,
+                'phone' => $request->phone,
+                'points' => 0,
+            ]);
+            $customer->save();
+        }
+
+        return response()->json(['message' => 'Successfully created user!'], 200);
     }
 
 

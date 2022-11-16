@@ -24,7 +24,9 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        // only can be created afther a successful payment
+        // order may include more than one product (products of the menu)
+        // and a ticket number (cycle 1 to 99)
     }
 
     /**
