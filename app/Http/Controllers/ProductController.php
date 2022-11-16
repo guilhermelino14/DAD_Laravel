@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\Paginator;
 
 class ProductController extends Controller
 {
@@ -15,7 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::take(10)->get();
+        return Product::paginate(10);
     }
 
     /**
@@ -36,8 +37,26 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        
-        return response()->json(['error' => 'teste'], 401);
+
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'photo' => 'required',
+            'type' => 'required',
+        ]);
+
+        $file_path = $request->photo[0]->store('products', 'public');
+        $file_name = substr($file_path, 9);
+
+        $product = Product::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'photo_url' => $file_name,
+            'type' => $request->type,
+        ]);
+        return response()->json(['message' => "Product successfull created"], 200);
     }
 
     /**
@@ -71,7 +90,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->type = $request->type;
+        $product->save();
+        return response()->json(['message' => "Product successfull updated"], 200);
     }
 
     /**
@@ -82,7 +107,8 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::destroy($id);
+        return response()->json(['message' => "Product successfull deleted"], 200);
     }
 
     

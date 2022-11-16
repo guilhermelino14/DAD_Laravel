@@ -29,8 +29,10 @@ Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
 
 Route::get('product/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
+Route::get('user/photo/{photo}', 'App\Http\Controllers\UserController@photo');
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::post('logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:sanctum');
+Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middleware('auth:sanctum');
 
