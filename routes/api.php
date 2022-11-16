@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/userteste', function (Request $request) {
 
 Route::resource('product', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
 
-Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:sanctum', 'ManagerVerification']);
+Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
 
 Route::resource('order', 'App\Http\Controllers\OrderController');
 Route::resource('user', 'App\Http\Controllers\UserController');
@@ -34,5 +34,5 @@ Route::get('user/photo/{photo}', 'App\Http\Controllers\UserController@photo');
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::post('logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:api');
-Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middleware('auth:sanctum');
+Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middleware('auth:api');
 
