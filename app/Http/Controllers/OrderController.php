@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Illuminate\Pagination\Paginator;
+use App\Http\Resources\OrderCollection;
+use App\Models\Order_item;
 
 class OrderController extends Controller
 {
@@ -49,7 +51,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        return Order::where('customer_id', $id)->paginate(10);
+        $orders = Order::where('customer_id', $id)->paginate(5);
+        return new OrderCollection($orders);
     }
 
     /**
