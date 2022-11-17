@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Pagination\Paginator;
 
 class OrderController extends Controller
 {
@@ -48,8 +49,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::find($id);
-        return $order;
+        return Order::where('customer_id', $id)->paginate(10);
     }
 
     /**

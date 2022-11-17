@@ -23,7 +23,7 @@ Route::resource('product', 'App\Http\Controllers\ProductController',['only' => [
 
 Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
 
-Route::resource('order', 'App\Http\Controllers\OrderController');
+Route::resource('orders', 'App\Http\Controllers\OrderController');
 Route::resource('user', 'App\Http\Controllers\UserController');
 Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
