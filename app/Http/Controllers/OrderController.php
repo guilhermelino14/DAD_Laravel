@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Pagination\Paginator;
 use App\Http\Resources\OrderCollection;
 use App\Models\Order_item;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -40,7 +41,13 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $response = Http::post('https://dad-202223-payments-api.vercel.app/api/payments', [
+            'type' => 'visa',
+            'reference' => '4283456893323321',
+            'value' => 34.01,
+        ]);
+
+        dd($request);
     }
 
     /**
