@@ -8,6 +8,9 @@ use Illuminate\Pagination\Paginator;
 use App\Http\Resources\OrderCollection;
 use App\Models\Order_item;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use App\Models\Customer;
+
 
 class OrderController extends Controller
 {
@@ -19,6 +22,26 @@ class OrderController extends Controller
     public function index()
     {
         return Order::get()->first();
+    }
+
+    public function getOrdersPreparingOrReady()
+    {
+        $orders = Order::where('status', 'P')->orWhere('status', 'R')->orderBy('created_at', 'asc')->paginate(10);
+        return new OrderCollection($orders);
+    }
+
+    public function orderUpdate(Request $request){
+        $order = Order::find($request->order['id']);
+        switch ($order->status) {
+            case 'P':
+                $order->status = 'R';
+                break;
+            case 'R':
+                $order->status = 'D';
+                break;
+        }
+        $order->save();
+        return response()->json(['order' => $order,'message' => "Order status updated"], 200);
     }
 
     /**
@@ -41,13 +64,57 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+
         $response = Http::post('https://dad-202223-payments-api.vercel.app/api/payments', [
-            'type' => 'visa',
-            'reference' => '4283456893323321',
-            'value' => 34.01,
+            'type' => Str::lower($request->payment_type),
+            'reference' => $request->payment_reference,
+            'value' => floatval($request->value),
         ]);
 
-        dd($request);
+        if($response['status'] != "valid"){
+            return response()->json(['message' => "Payment not valid"], 400);
+        }
+
+        $last_order = Order::orderBy('created_at', 'desc')->first();
+        $ticket_number = $last_order->ticket_number == 99 ? 1 : $last_order->ticket_number + 1;
+
+        $points = intval($request->value / 10);
+
+        $order = Order::create([
+            'ticket_number' => $ticket_number,
+            'status' => 'P',
+            'customer_id' => $request->customer_id == 0 ? null : $request->customer_id,
+            'total_price' => $request->value,
+            'total_paid' => $request->value,
+            'total_paid_with_points' => 0,
+            'points_gained' => $points,
+            'points_used_to_pay' => 0,
+            'payment_type' => $request->payment_type,
+            'payment_reference' => $request->payment_reference,
+            'date' => now(),
+            
+        ]);
+        $localNumber = 1;
+        foreach($request->products as $product){
+            Order_item::create([
+                'order_id' => $order->id,
+                'order_local_number' => $localNumber,
+                'product_id' => $product['id'],
+                'status' => $product['type'] == "hot dish" ? "W" : "R",
+                'price' => $product['price'],
+                'preparation_by' => null,
+            ]);
+            $localNumber++;
+        }
+
+        if($request->customer_id != 0){
+            $customer = Customer::find($request->customer_id);
+            $customer->points += $points;
+            $customer->save();
+        }
+
+
+        return response()->json(['status' => "Created",'message' => "Payment valid"], 200);
     }
 
     /**
@@ -58,7 +125,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $orders = Order::where('customer_id', $id)->paginate(5);
+        $orders = Order::where('customer_id', $id)->orderBy('created_at', 'desc')->paginate(5);
         return new OrderCollection($orders);
     }
 

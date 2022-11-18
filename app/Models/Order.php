@@ -10,7 +10,17 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'ticket_number',
+        'status',
+        'customer_id',
+        'total_price',
+        'total_paid',
+        'total_paid_with_points',
+        'points_gained',
+        'points_used_to_pay',
+        'payment_type',
+        'payment_reference',
+        'date'
     ];
 
     protected $hidden = [

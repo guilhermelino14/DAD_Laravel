@@ -23,7 +23,7 @@ Route::resource('product', 'App\Http\Controllers\ProductController',['only' => [
 
 Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
 
-Route::resource('orders', 'App\Http\Controllers\OrderController');
+Route::resource('orders', 'App\Http\Controllers\OrderController')->middleware('cors');
 Route::resource('user', 'App\Http\Controllers\UserController');
 Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
@@ -36,3 +36,5 @@ Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::post('logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:api');
 Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middleware('auth:api');
 
+Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOrdersPreparingOrReady')->middleware('cors');
+Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');

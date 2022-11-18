@@ -12,7 +12,15 @@ class Order_item extends Model
     protected $fillable = [
         'id',
         'order_id',
+        'order_local_number',
+        'product_id',
+        'status',
+        'price',
+        'preparation_by',
+        'notes'
     ];
+
+    public $timestamps = false;
 
     public function order()
     {
