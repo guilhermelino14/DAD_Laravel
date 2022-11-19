@@ -82,4 +82,18 @@ class Order_itemController extends Controller
     {
         //
     }
+
+    public function orderItemUpdate(Request $request){
+        $order_item = Order_item::find($request->id);
+        switch ($order_item->status) {
+            case 'W':
+                $order_item->status = 'P';
+                break;
+            case 'P':
+                $order_item->status = 'R';
+                break;
+        }
+        $order_item->save();
+        return response()->json(['message' => "Order status updated"], 200);
+    }
 }

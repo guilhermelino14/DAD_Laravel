@@ -10,6 +10,8 @@ use App\Models\Order_item;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\Customer;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderUpdateResource;
 
 
 class OrderController extends Controller
@@ -32,6 +34,11 @@ class OrderController extends Controller
 
     public function orderUpdate(Request $request){
         $order = Order::find($request->order['id']);
+        foreach($order->order_items as $order_item){
+            if($order_item->status != 'R'){
+                return response()->json(['message' => "Order is not ready"], 400);
+            }
+        }
         switch ($order->status) {
             case 'P':
                 $order->status = 'R';
@@ -41,7 +48,7 @@ class OrderController extends Controller
                 break;
         }
         $order->save();
-        return response()->json(['order' => $order,'message' => "Order status updated"], 200);
+        return response()->json(['order' => new OrderUpdateResource($order),'message' => "Order status updated"], 200);
     }
 
     /**
@@ -80,10 +87,11 @@ class OrderController extends Controller
 
         $points = intval($request->value / 10);
 
+        $customer = Customer::where('user_id', $request->customer_id)->first();
         $order = Order::create([
             'ticket_number' => $ticket_number,
             'status' => 'P',
-            'customer_id' => $request->customer_id == 0 ? null : $request->customer_id,
+            'customer_id' => $customer == null ? 0 : $customer->id,
             'total_price' => $request->value,
             'total_paid' => $request->value,
             'total_paid_with_points' => 0,
@@ -107,8 +115,7 @@ class OrderController extends Controller
             $localNumber++;
         }
 
-        if($request->customer_id != 0){
-            $customer = Customer::find($request->customer_id);
+        if($customer->id != null){
             $customer->points += $points;
             $customer->save();
         }
@@ -125,8 +132,14 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $orders = Order::where('customer_id', $id)->orderBy('created_at', 'desc')->paginate(5);
+        $customer = Customer::where('user_id', $id)->first();
+        $orders = Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->paginate(5);
         return new OrderCollection($orders);
+    }
+
+    public function showOrderwithId($id){
+        $order = Order::find($id);
+        return new OrderUpdateResource($order);
     }
 
     /**

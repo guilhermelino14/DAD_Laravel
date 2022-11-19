@@ -11,9 +11,12 @@ class Customer extends Model
 
     protected $fillable = [
         'user_id',
-        'nif',
         'phone',
         'points',
+        'nif',
+        'default_payment_type',
+        'default_payment_reference',
+        'custom',
     ];
 
     protected $hidden = [

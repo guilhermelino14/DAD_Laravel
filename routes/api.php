@@ -38,3 +38,5 @@ Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middlewa
 
 Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOrdersPreparingOrReady')->middleware('cors');
 Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');
+Route::put('orderItemUpdate', 'App\Http\Controllers\Order_itemController@orderItemUpdate')->middleware('cors');
+Route::get('showOrderwithId/{id}', 'App\Http\Controllers\OrderController@showOrderwithId')->middleware('cors');
