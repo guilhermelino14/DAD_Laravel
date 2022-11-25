@@ -134,6 +134,9 @@ class OrderController extends Controller
     public function show($id)
     {
         $customer = Customer::where('user_id', $id)->first();
+        if($customer == null){
+            return response()->json(['message' => "Customer not found"], 400);
+        }
         $orders = Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->paginate(5);
         return new OrderCollection($orders);
     }
