@@ -20,6 +20,7 @@ class Order extends Model
         'points_used_to_pay',
         'payment_type',
         'payment_reference',
+        'custom',
         'date'
     ];
 
