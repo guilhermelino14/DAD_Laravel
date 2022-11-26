@@ -122,7 +122,7 @@ class OrderController extends Controller
         }
 
 
-        return response()->json(['status' => "Created",'message' => "Payment valid"], 200);
+        return response()->json(['status' => "Created",'message' => "Payment valid", 'order' => $order], 200);
     }
 
     /**

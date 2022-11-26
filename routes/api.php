@@ -40,3 +40,6 @@ Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOr
 Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');
 Route::put('orderItemUpdate', 'App\Http\Controllers\Order_itemController@orderItemUpdate')->middleware('cors');
 Route::get('showOrderwithId/{id}', 'App\Http\Controllers\OrderController@showOrderwithId')->middleware('cors');
+
+
+Route::get('costumerGetUser/{id}', 'App\Http\Controllers\CustomerController@costumerGetUser')->middleware('cors');
