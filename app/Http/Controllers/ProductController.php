@@ -48,7 +48,7 @@ class ProductController extends Controller
             'photo_url' => $file_name,
             'type' => $request->type,
         ]);
-        return response()->json(['message' => "Product successfull created"], 200);
+        return response()->json(['message' => "Product successfully created"], 200);
     }
 
     /**
@@ -88,7 +88,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->type = $request->type;
         $product->save();
-        return response()->json(['message' => "Product successfull updated"], 200);
+        return response()->json(['message' => "Product successfully updated"], 200);
     }
 
     /**
@@ -100,7 +100,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         Product::destroy($id);
-        return response()->json(['message' => "Product successfull deleted"], 200);
+        return response()->json(['message' => "Product successfully deleted"], 200);
     }
 
     

@@ -166,7 +166,24 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $order = Order::find($id);
+        switch ($order->status) {
+            case 'Preparing':
+                $order->status = 'P';
+                break;
+            case 'Ready':
+                $order->status = 'R';
+                break;
+            case 'Delivered':
+                $order->status = 'D';
+                break;
+            case 'Canceled':
+                $order->status = 'C';
+                break;
+        }
+        $order->custom = $request->custom;
+        $order->save();
+        return response()->json(['message' => "Order successfully updated"], 200);
     }
 
     /**
