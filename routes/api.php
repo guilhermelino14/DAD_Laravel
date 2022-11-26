@@ -19,17 +19,17 @@ Route::middleware('auth:api')->get('/userteste', function (Request $request) {
 });
 
 
-Route::resource('product', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
+Route::resource('products', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
 
-Route::resource('product', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
+Route::resource('products', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
 
 Route::resource('orders', 'App\Http\Controllers\OrderController')->middleware('cors');
-Route::resource('user', 'App\Http\Controllers\UserController');
-Route::resource('customer', 'App\Http\Controllers\CustomerController');
-Route::resource('order_item', 'App\Http\Controllers\Order_itemController'); 
+Route::resource('users', 'App\Http\Controllers\UserController');
+Route::resource('customers', 'App\Http\Controllers\CustomerController');
+Route::resource('order_items', 'App\Http\Controllers\Order_itemController'); 
 
-Route::get('product/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
-Route::get('user/photo/{photo}', 'App\Http\Controllers\UserController@photo');
+Route::get('products/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
+Route::get('users/photo/{photo}', 'App\Http\Controllers\UserController@photo');
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
