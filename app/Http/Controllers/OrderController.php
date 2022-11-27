@@ -33,6 +33,12 @@ class OrderController extends Controller
         return new OrderCollection($orders);
     }
 
+    public function getOrdersToPublicBoard()
+    {
+        $orders = Order::where('status', 'P')->orWhere('status', 'R')->orderBy('created_at', 'asc')->get();
+        return new OrderCollection($orders);
+    }
+
     public function orderUpdate(Request $request){
         $order = Order::find($request->order['id']);
         foreach($order->order_items as $order_item){
@@ -92,7 +98,8 @@ class OrderController extends Controller
         $order = Order::create([
             'ticket_number' => $ticket_number,
             'status' => 'P',
-            'customer_id' => $customer == null ? 0 : $customer->id,
+            'customer_id' => $customer? $customer->id : null,
+            // 'customer_id' => $customer == null ? 0 : $customer->id,
             'total_price' => $request->value,
             'total_paid' => $request->value,
             'total_paid_with_points' => 0,
@@ -100,6 +107,7 @@ class OrderController extends Controller
             'points_used_to_pay' => 0,
             'payment_type' => $request->payment_type,
             'payment_reference' => $request->payment_reference,
+            'custom' => $request->custom ? json_encode($request->custom) : null,
             'date' => now(),
             
         ]);
@@ -116,7 +124,7 @@ class OrderController extends Controller
             $localNumber++;
         }
 
-        if($customer->id != null){
+        if($customer!= null){
             $customer->points += $points;
             $customer->save();
         }

@@ -55,6 +55,7 @@ class OrderUpdateResource extends JsonResource
             'payment_type' => $this->payment_type,
             'payment_reference' => $this->payment_reference,
             'date' => $this->date,
+            'custom' => $this->custom,
             'order_items' => $this->order_items
         ];
     }
