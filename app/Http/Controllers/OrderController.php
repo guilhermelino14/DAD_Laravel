@@ -78,33 +78,43 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        
 
         $response = Http::post('https://dad-202223-payments-api.vercel.app/api/payments', [
             'type' => Str::lower($request->payment_type),
             'reference' => $request->payment_reference,
             'value' => floatval($request->value),
         ]);
+        
 
         if($response['status'] != "valid"){
             return response()->json(['message' => "Payment not valid"], 400);
         }
+
+        $customer = Customer::where('user_id', $request->customer_id)->first();
+        $points_used = $request->points *10;
+
+        if($customer->points < $points_used){
+            return response()->json(['message' => "Not enough points"], 400);
+        }
+
 
         $last_order = Order::orderBy('created_at', 'desc')->first();
         $ticket_number = $last_order->ticket_number == 99 ? 1 : $last_order->ticket_number + 1;
 
         $points = intval($request->value / 10);
 
-        $customer = Customer::where('user_id', $request->customer_id)->first();
+        
         $order = Order::create([
             'ticket_number' => $ticket_number,
             'status' => 'P',
             'customer_id' => $customer? $customer->id : null,
             // 'customer_id' => $customer == null ? 0 : $customer->id,
             'total_price' => $request->value,
-            'total_paid' => $request->value,
-            'total_paid_with_points' => 0,
+            'total_paid' => $points_used == 0 ? $request->value : $request->value - $request->points * 5,
+            'total_paid_with_points' => $request->points * 5,
             'points_gained' => $points,
-            'points_used_to_pay' => 0,
+            'points_used_to_pay' => $points_used,
             'payment_type' => $request->payment_type,
             'payment_reference' => $request->payment_reference,
             'custom' => $request->custom ? json_encode($request->custom) : null,
@@ -125,6 +135,7 @@ class OrderController extends Controller
         }
 
         if($customer!= null){
+            $customer->points -= $points_used;
             $customer->points += $points;
             $customer->save();
         }
