@@ -185,8 +185,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $order = Order::find($id);
-        switch ($order->status) {
+        switch ($request->status) {
             case 'Preparing':
                 $order->status = 'P';
                 break;
@@ -198,6 +199,23 @@ class OrderController extends Controller
                 break;
             case 'Canceled':
                 $order->status = 'C';
+                
+                $response = Http::post('https://dad-202223-payments-api.vercel.app/api/refunds', [
+                    'type' => Str::lower($order->payment_type),
+                    'reference' => $order->payment_reference,
+                    'value' => floatval($order->total_price),
+                ]);
+                
+                if($response['status'] != "valid"){
+                    return response()->json(['message' => "Payment info not valid"], 400);
+                }
+
+                $customer = Customer::find($order->customer_id);
+                if($customer != null){
+                    $customer->points += $order->points_used_to_pay;
+                    $customer->save();
+                }
+
                 break;
         }
         $order->custom = $request->custom;
