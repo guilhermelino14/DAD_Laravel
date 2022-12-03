@@ -94,7 +94,7 @@ class OrderController extends Controller
         $customer = Customer::where('user_id', $request->customer_id)->first();
         $points_used = $request->points *10;
 
-        if($customer->points < $points_used){
+        if($customer!= null && $customer->points < $points_used){
             return response()->json(['message' => "Not enough points"], 400);
         }
 
