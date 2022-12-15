@@ -114,4 +114,37 @@ class StatisticsController extends Controller
         }
         return response()->json(['totalEarn' => $totalEarn, 'earnsInMounts' => $totalEarnLast3Months], 200);
     }
+    public function totalSpent($id){
+        $customer = Customer::where('user_id', $id)->first();
+        if($customer == null){
+            return response()->json(['message' => "Customer not found"], 400);
+        }
+        $totalSpent = Order::where('customer_id', $customer->id)->where('status', 'D')->sum('total_paid');
+
+        $totalSpent12Mounths = [];
+        for ($i = 0; $i < 12; $i++) {
+            $value = Order::where('customer_id', $customer->id)->where('status', 'D')->whereMonth('created_at', now()->subMonths($i)->month)->sum('total_paid');
+            //convert the value in a integer
+            $value = (int)$value;
+            array_push($totalSpent12Mounths, $value);
+        }
+        return response()->json(['totalSpent' => $totalSpent, 'totalSpent12Mounths' => $totalSpent12Mounths], 200);
+    }
+    public function totalSpentPoints($id){
+        $customer = Customer::where('user_id', $id)->first();
+        if($customer == null){
+            return response()->json(['message' => "Customer not found"], 400);
+        }
+        $totalSpentPoints = Order::where('customer_id', $customer->id)->where('status', 'D')->sum('total_paid_with_points');
+        return response()->json(['totalSpentPoints' => $totalSpentPoints], 200);
+    }
+    public function totalPointsEarned($id){
+        $customer = Customer::where('user_id', $id)->first();
+        if($customer == null){
+            return response()->json(['message' => "Customer not found"], 400);
+        }
+        $totalPointsEarned = Order::where('customer_id', $customer->id)->where('status', 'D')->sum('points_gained');
+        return response()->json(['totalPointsEarned' => $totalPointsEarned], 200);
+    }
+    
 }
