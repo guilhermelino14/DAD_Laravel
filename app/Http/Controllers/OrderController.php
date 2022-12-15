@@ -78,6 +78,30 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        if(Str::lower($request->payment_type) == "visa"){
+            if(!Str::startsWith($request->payment_reference, '4')){
+                return response()->json(['message' => "Payment Reference must start with 4"], 400);
+            }
+            if($request->value > 200){
+                return response()->json(['message' => "Payment Reference must be inferior of 200€"], 400);
+            }
+        }
+        if(Str::lower($request->payment_type) == "mbway"){
+            if(!Str::startsWith($request->payment_reference, '9')){
+                return response()->json(['message' => "Payment Reference must start with 9"], 400);
+            }
+            if($request->value > 10){
+                return response()->json(['message' => "Payment Reference must be inferior of 10€"], 400);
+            }
+        }
+        if(Str::lower($request->payment_type) == "paypal"){
+            if(!Str::endsWith($request->payment_reference, '.pt') && !Str::endsWith($request->payment_reference, '.com')){
+                return response()->json(['message' => "Payment Reference must end with .pt or .com"], 400);
+            }
+            if($request->value > 50){
+                return response()->json(['message' => "Payment Reference must be inferior of 50€"], 400);
+            }
+        }
         
 
         $response = Http::post('https://dad-202223-payments-api.vercel.app/api/payments', [
