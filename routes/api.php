@@ -47,3 +47,5 @@ Route::get('showOrderwithId/{id}', 'App\Http\Controllers\OrderController@showOrd
 Route::get('costumerGetUser/{id}', 'App\Http\Controllers\CustomerController@costumerGetUser')->middleware('cors');
 
 Route::resource('statistics', 'App\Http\Controllers\StatisticsController')->middleware('cors');
+Route::get('statistics/totalEarn/D', 'App\Http\Controllers\StatisticsController@totalEarn');
+Route::get('statistics/totalEarn/Mounth', 'App\Http\Controllers\StatisticsController@totalEarnLast3Months');
