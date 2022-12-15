@@ -21,12 +21,12 @@ class Order extends Model
         'payment_type',
         'payment_reference',
         'custom',
-        'date'
+        'date',
+        'created_at',
+        'updated_at',
     ];
 
     protected $hidden = [
-        'created_at',
-        'updated_at',
         'deleted_at',
     ];
 
