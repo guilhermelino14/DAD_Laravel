@@ -96,12 +96,22 @@ class StatisticsController extends Controller
     }
 
     public function totalEarnLast3Months(){
-        $totalEarn = Order::where('status', 'D')->where('created_at', '>=', now()->subMonths(3))->sum('total_price');
+        $totalEarn = 0;
+        for ($i = 0; $i < 3; $i++) {
+            $value = Order::where('status', 'D')->whereMonth('created_at', now()->subMonths($i)->month)->sum('total_price');
+            //convert the value in a integer
+            $value = (int)$value;
+            $totalEarn += $value;
+        }
+        
         // create a array with the wins of the last 3 months
         $totalEarnLast3Months = [];
         for ($i = 0; $i < 12; $i++) {
-            $totalEarnLast3Months[] = Order::where('status', 'D')->whereMonth('created_at', now()->subMonths($i)->month)->sum('total_price');
+            $value = Order::where('status', 'D')->whereMonth('created_at', now()->subMonths($i)->month)->sum('total_price');
+            //convert the value in a integer
+            $value = (int)$value;
+            array_push($totalEarnLast3Months, $value);
         }
-        return response()->json(['totalEarn' => $totalEarn, 'earnsImMounts' => $totalEarnLast3Months], 200);
+        return response()->json(['totalEarn' => $totalEarn, 'earnsInMounts' => $totalEarnLast3Months], 200);
     }
 }
