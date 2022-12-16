@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\User;
 
 class CustomerController extends Controller
 {
@@ -69,7 +70,20 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'nif' => 'required|digits:9',
+            'phone' => 'required|digits:9',
+        ]);
+        
+        $customer = Customer::where('user_id', $id)->first();
+        $user = User::where('id', $id)->first();
+        $user->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->nif = $request->nif;
+        $user->save();
+        $customer->save();
+        return response()->json(["message" => "Profile Updated"], 200);
     }
 
     /**
