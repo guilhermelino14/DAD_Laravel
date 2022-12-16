@@ -25,6 +25,8 @@ Route::get('users/photo/{photo}', 'App\Http\Controllers\UserController@photo');
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 
+Route::get('getOrdersToPublicBoard', 'App\Http\Controllers\OrderController@getOrdersToPublicBoard')->middleware('cors');
+
 Route::group(['middleware' => ['auth:api']], function() {
     
     Route::resource('users', 'App\Http\Controllers\UserController');
@@ -33,7 +35,7 @@ Route::group(['middleware' => ['auth:api']], function() {
 
 
     Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOrdersPreparingOrReady')->middleware('cors');
-    Route::get('getOrdersToPublicBoard', 'App\Http\Controllers\OrderController@getOrdersToPublicBoard')->middleware('cors');
+    
 
     Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');
     Route::put('orderItemUpdate', 'App\Http\Controllers\Order_itemController@orderItemUpdate')->middleware('cors');
