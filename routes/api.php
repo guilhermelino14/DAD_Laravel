@@ -51,4 +51,4 @@ Route::get('statistics/totalEarn/D', 'App\Http\Controllers\StatisticsController@
 Route::get('statistics/totalEarn/Mounth', 'App\Http\Controllers\StatisticsController@totalEarnLast3Months');
 Route::get('statistics/totalSpent/{id}', 'App\Http\Controllers\StatisticsController@totalSpent');
 Route::get('statistics/totalSpentPoints/{id}', 'App\Http\Controllers\StatisticsController@totalSpentPoints');
-Route::get('statistics/totalPointsEarned/{id}', 'App\Http\Controllers\StatisticsController@totalPointsEarned');
+Route::get('statistics/totalPointsEarned/{id}', 'App\Http\Controllers\StatisticsController@totalPointsEarned')->middleware('auth:api');
