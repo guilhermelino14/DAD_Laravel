@@ -14,41 +14,41 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/userteste', function (Request $request) {
-    return $request->user();
-});
-
-
 Route::resource('products', 'App\Http\Controllers\ProductController',['only' => ['show','index']]);
+Route::get('products/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
 
 Route::resource('products', 'App\Http\Controllers\ProductController',['except' => ['show','index']])->middleware(['auth:api', 'ManagerVerification']);
 
 Route::resource('orders', 'App\Http\Controllers\OrderController')->middleware('cors');
-Route::resource('users', 'App\Http\Controllers\UserController');
-Route::resource('customers', 'App\Http\Controllers\CustomerController');
-Route::resource('order_items', 'App\Http\Controllers\Order_itemController'); 
-
-Route::get('products/photo/{photo}', 'App\Http\Controllers\ProductController@photo');
 Route::get('users/photo/{photo}', 'App\Http\Controllers\UserController@photo');
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
-Route::post('logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:api');
-Route::get('userType', 'App\Http\Controllers\AuthController@userType')->middleware('auth:api');
 
-Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOrdersPreparingOrReady')->middleware('cors');
-Route::get('getOrdersToPublicBoard', 'App\Http\Controllers\OrderController@getOrdersToPublicBoard')->middleware('cors');
-
-Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');
-Route::put('orderItemUpdate', 'App\Http\Controllers\Order_itemController@orderItemUpdate')->middleware('cors');
-Route::get('showOrderwithId/{id}', 'App\Http\Controllers\OrderController@showOrderwithId')->middleware('cors');
+Route::group(['middleware' => ['auth:api']], function() {
+    
+    Route::resource('users', 'App\Http\Controllers\UserController');
+    Route::resource('customers', 'App\Http\Controllers\CustomerController');
+    Route::resource('order_items', 'App\Http\Controllers\Order_itemController'); 
 
 
-Route::get('costumerGetUser/{id}', 'App\Http\Controllers\CustomerController@costumerGetUser')->middleware('cors');
+    Route::get('ordersPreparingOrReady', 'App\Http\Controllers\OrderController@getOrdersPreparingOrReady')->middleware('cors');
+    Route::get('getOrdersToPublicBoard', 'App\Http\Controllers\OrderController@getOrdersToPublicBoard')->middleware('cors');
 
-Route::resource('statistics', 'App\Http\Controllers\StatisticsController')->middleware('cors');
-Route::get('statistics/totalEarn/D', 'App\Http\Controllers\StatisticsController@totalEarn');
-Route::get('statistics/totalEarn/Mounth', 'App\Http\Controllers\StatisticsController@totalEarnLast3Months');
-Route::get('statistics/totalSpent/{id}', 'App\Http\Controllers\StatisticsController@totalSpent');
-Route::get('statistics/totalSpentPoints/{id}', 'App\Http\Controllers\StatisticsController@totalSpentPoints');
-Route::get('statistics/totalPointsEarned/{id}', 'App\Http\Controllers\StatisticsController@totalPointsEarned')->middleware('auth:api');
+    Route::put('orderUpdate', 'App\Http\Controllers\OrderController@orderUpdate')->middleware('cors');
+    Route::put('orderItemUpdate', 'App\Http\Controllers\Order_itemController@orderItemUpdate')->middleware('cors');
+    Route::get('showOrderwithId/{id}', 'App\Http\Controllers\OrderController@showOrderwithId')->middleware('cors');
+
+    Route::get('costumerGetUser/{id}', 'App\Http\Controllers\CustomerController@costumerGetUser')->middleware('cors');
+
+
+    Route::resource('statistics', 'App\Http\Controllers\StatisticsController')->middleware('cors');
+    Route::get('statistics/totalEarn/D', 'App\Http\Controllers\StatisticsController@totalEarn');
+    Route::get('statistics/totalEarn/Mounth', 'App\Http\Controllers\StatisticsController@totalEarnLast3Months');
+    Route::get('statistics/totalSpent/{id}', 'App\Http\Controllers\StatisticsController@totalSpent');
+    Route::get('statistics/totalSpentPoints/{id}', 'App\Http\Controllers\StatisticsController@totalSpentPoints');
+    Route::get('statistics/totalPointsEarned/{id}', 'App\Http\Controllers\StatisticsController@totalPointsEarned')->middleware('auth:api');
+
+    Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+    Route::get('userType', 'App\Http\Controllers\AuthController@userType');
+});
